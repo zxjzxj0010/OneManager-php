@@ -668,21 +668,16 @@ class Aliyundrive {
             if (!isset($_POST['filesha1'])) return output('error: no file sha1', 400);
 
             $tmp = splitlast($_POST['upbigfilename'], '/');
-            if ($tmp[1] != '') {
+            if ($tmp[1]!='') {
                 $fileinfo['name'] = $tmp[1];
-                if ($_SERVER['admin']) $fileinfo['path'] = $tmp[0];
+                $fileinfo['path'] = $tmp[0];
             } else {
                 $fileinfo['name'] = $_POST['upbigfilename'];
             }
             $fileinfo['size'] = $_POST['filesize'];
             $fileinfo['filelastModified'] = $_POST['filelastModified'];
-            if ($_SERVER['admin']) {
-                $filename = $fileinfo['name'];
-            } else {
-                $tmp1 = splitlast($fileinfo['name'], '.');
-                if ($tmp1[0] == '' || $tmp1[1] == '') $filename = $_POST['filesha1'];
-                else $filename = $_POST['filesha1'] . '.' . $tmp1[1];
-            }
+            $filename = spurlencode($_POST['upbigfilename'], '/');
+
 
             $parent = $this->list_path($path . '/' . $fileinfo['path']);
             if (isset($parent['file_id'])) {
